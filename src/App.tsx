@@ -1,25 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import styled from "styled-components";
+import "./App.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Invoices from "./pages/Invoices";
+import SideBar from "./components/SideBar";
+import InvoiceDialog from "./components/InvoiceDialog";
+import InvoiceDetails from "./pages/InvoiceDetails";
+
+const StyledApp = styled.main`
+  background-color: rgb(20, 22, 37);
+  min-height: 100vh;
+  padding: 2rem 1.5rem;
+`;
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <SideBar />
+      <StyledApp>
+        <div className="main-container">
+          <Routes>
+            <Route path="/" element={<Invoices />}></Route>
+            <Route path="/:id" element={<InvoiceDetails />}></Route>
+          </Routes>
+        </div>
+        <header className="App-header"></header>
+      </StyledApp>
+    </BrowserRouter>
   );
 }
 
