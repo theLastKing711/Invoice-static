@@ -29,23 +29,26 @@ const invoice: IInvoiceForm = {
   date: "2/12/2020",
   items: [
     {
+      id: 1,
       name: "first item",
       price: 200,
       quantity: 15,
     },
     {
+      id: 2,
       name: "second item",
       price: 400,
       quantity: 10,
     },
     {
+      id: 3,
       name: "third item",
       price: 500,
       quantity: 5,
     },
   ],
   paymentTerms: 3,
-  projectDescriptoin: "first project",
+  projectDescription: "first project",
 };
 
 const StyledInvoiceDetails = styled.main`

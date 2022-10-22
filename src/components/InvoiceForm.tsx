@@ -1,14 +1,8 @@
 import styled from "styled-components";
 import StyledMaterialInput from "./StyledMaterialInput";
 import {
-  DesktopDatePicker,
-  DesktopDatePickerProps,
-} from "@mui/x-date-pickers/DesktopDatePicker";
-import { styled as materialStyled } from "@mui/material/styles";
-import {
   Button,
   CardActions,
-  CardContent,
   FormControl,
   Grid,
   IconButton,
@@ -19,44 +13,13 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { Dayjs } from "dayjs";
 import React from "react";
 import { IInvoiceItem, IInvoiceForm } from "../types";
-import { Controller, useForm } from "react-hook-form";
-import { ErrorMessage } from "@hookform/error-message";
-
-const StyledDialog = materialStyled(DesktopDatePicker)<
-  DesktopDatePickerProps<number, string>
->(({ theme }) => ({
-  "& .MuiPickersDay-root": {
-    color: "white",
-  },
-
-  // "& .MuiDialog-container": {
-  //   justifyContent: "flex-start",
-  //   padding: "115px 0 0 0",
-  //   [theme.breakpoints.up("lg")]: {
-  //     padding: "0 0 0 115px",
-  //   },
-  //   "& .MuiDialog-paper": {
-  //     margin: 0,
-  //     minHeight: "100%",
-  //     padding: "3rem 2rem 1.5rem",
-  //     width: "100%",
-  //     [theme.breakpoints.up("lg")]: {
-  //       width: "calc(50vw - 115px)",
-  //     },
-  //     backgroundColor: theme.palette.background.paper,
-  //     maxWidth: "100vw",
-  //   },
-  //   "& .dialog-header": {
-  //     color: "white",
-  //     fontSize: "1.5rem",
-  //     marginBottom: "3rem",
-  //   },
-  // },
-}));
+import { useFieldArray, useForm } from "react-hook-form";
+import { DesktopDatePicker } from "@mui/x-date-pickers";
+import { defaultInvoice } from "../constants";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const StyledForm = styled.form`
   .form-section {
@@ -87,16 +50,19 @@ interface Props {
 
 const items: IInvoiceItem[] = [
   {
+    id: 1,
     name: "first item",
     price: 200,
     quantity: 15,
   },
   {
+    id: 2,
     name: "second item",
     price: 400,
     quantity: 10,
   },
   {
+    id: 3,
     name: "third item",
     price: 500,
     quantity: 5,
@@ -116,18 +82,22 @@ const InvoiceForm: React.FC<Props> = ({
   const theme = useTheme();
 
   const {
-    register,
     control,
     setValue,
     handleSubmit,
+
     formState: { errors },
-  } = useForm<FormData>({
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-    },
+  } = useForm<IInvoiceForm>({
+    defaultValues: defaultInvoice,
     reValidateMode: "onBlur",
   });
+
+  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
+    {
+      control, // control props comes from useForm (optional: if you are using FormContext)
+      name: "items", // unique name for your Field Array
+    }
+  );
 
   const defaultBgColor = theme.palette.background.default;
 
@@ -135,61 +105,79 @@ const InvoiceForm: React.FC<Props> = ({
     console.log("hello world");
   };
 
-  console.log("errors", errors);
+  // console.log("errors", errors);
+
+  const submit = (values: any) => {
+    console.log("alksjd");
+  };
+
+  const calculateTotal = (quantity: number, price: number): number => {
+    console.log("first", quantity);
+    console.log("second", price);
+
+    return quantity * price;
+  };
 
   return (
-    <StyledForm className="form" color={theme.palette.primary.main}>
-      <StyledMaterialInput controlName="firstName" control={control} />
-      {errors.firstName && <h2>alsdjlasd</h2>}
-      {/* <div className="form-section">
+    <StyledForm
+      onSubmit={handleSubmit(submit)}
+      className="form"
+      color={theme.palette.primary.main}
+    >
+      <div className="form-section">
         <div className="form-section__title">Bill Form</div>
         <Grid container columnSpacing={2}>
           <Grid item xs={12}>
-            <Controller
+            <StyledMaterialInput
+              controlName="billFrom.streetAddress"
+              EName="billFrom.streetAddress"
               control={control}
-              name="firstName"
               rules={{
-                required: true,
-                min: 4,
+                required: "Street Address is required",
               }}
-              render={({
-                field: { onChange, onBlur, value, ref, name, ...field },
-                fieldState: { error },
-                formState: { errors },
-              }) => (
-                <>
-                  <StyledMaterialInput
-                    onChange={onChange}
-                    onBlur={onBlur}
-                    title="first name"
-                    name={name}
-                    inputRef={ref}
-                    error={true}
-                  />
-                  <h2>{errors.firstName?.message}</h2>
-                  <h2>{error?.message}</h2>
-                </>
-              )}
-            />
-            {errors.firstName && "errors"}
-            <ErrorMessage
-              errors={errors}
-              name="firstName"
-              render={({ message }) => <p>{message} is required</p>}
+              inputProps={{
+                title: "Street Address",
+              }}
             />
           </Grid>
           <Grid item xs={12} md={4} lg={4}>
             <StyledMaterialInput
-              title="City"
-              controlName="lastName"
+              controlName="billFrom.city"
+              EName="billFrom.city"
               control={control}
+              rules={{
+                required: "City is required",
+              }}
+              inputProps={{
+                title: "City",
+              }}
             />
           </Grid>
           <Grid item xs={12} md={4} lg={4}>
-            <StyledMaterialInput title="Postal Code" />
+            <StyledMaterialInput
+              controlName="billFrom.postCode"
+              EName="billFrom.postCode"
+              control={control}
+              rules={{
+                required: "Post Code is required",
+              }}
+              inputProps={{
+                title: "Post Code",
+              }}
+            />
           </Grid>
           <Grid item xs={12} md={4} lg={4}>
-            <StyledMaterialInput title="Address" />
+            <StyledMaterialInput
+              controlName="billFrom.country"
+              EName="billFrom.country"
+              control={control}
+              rules={{
+                required: "Country is required",
+              }}
+              inputProps={{
+                title: "Country",
+              }}
+            />
           </Grid>
         </Grid>
       </div>
@@ -197,22 +185,82 @@ const InvoiceForm: React.FC<Props> = ({
         <div className="form-section__title">Bill To</div>
         <Grid container columnSpacing={2}>
           <Grid item xs={12}>
-            <StyledMaterialInput title="Clients's Name" />
+            <StyledMaterialInput
+              controlName="billTo.clientName"
+              EName="billTo.clientName"
+              control={control}
+              rules={{
+                required: "Client's Name is required",
+              }}
+              inputProps={{
+                title: "Client's Name",
+              }}
+            />
           </Grid>
           <Grid item xs={12}>
-            <StyledMaterialInput title="Clients's Email" />
+            <StyledMaterialInput
+              controlName="billTo.clientEmail"
+              EName="billTo.clientEmail"
+              control={control}
+              rules={{
+                required: "Client's Email is required",
+              }}
+              inputProps={{
+                title: "Client's Email",
+              }}
+            />
           </Grid>
           <Grid item xs={12}>
-            <StyledMaterialInput title="Street Address" />
+            <StyledMaterialInput
+              controlName="billTo.streetAddress"
+              EName="billTo.streetAddress"
+              control={control}
+              rules={{
+                required: "Street Address is required",
+              }}
+              inputProps={{
+                title: "Street Address",
+              }}
+            />
           </Grid>
           <Grid item xs={12} md={4} lg={4}>
-            <StyledMaterialInput title="City" />
+            <StyledMaterialInput
+              controlName="billTo.city"
+              EName="billTo.city"
+              control={control}
+              rules={{
+                required: "City is required",
+              }}
+              inputProps={{
+                title: "City",
+              }}
+            />
           </Grid>
           <Grid item xs={12} md={4} lg={4}>
-            <StyledMaterialInput title="Post Code" />
+            <StyledMaterialInput
+              controlName="billTo.postCode"
+              EName="billTo.postCode"
+              control={control}
+              rules={{
+                required: "Post Code is required",
+              }}
+              inputProps={{
+                title: "Post Code",
+              }}
+            />
           </Grid>
           <Grid item xs={12} md={4} lg={4}>
-            <StyledMaterialInput title="Country" />
+            <StyledMaterialInput
+              controlName="billTo.country"
+              EName="billTo.country"
+              control={control}
+              rules={{
+                required: "Country is required",
+              }}
+              inputProps={{
+                title: "Country",
+              }}
+            />
           </Grid>
           <Grid item xs={12} md={6}>
             <DesktopDatePicker
@@ -257,7 +305,6 @@ const InvoiceForm: React.FC<Props> = ({
               fullWidth
               sx={{ display: "flex", flexDirection: "column" }}
             >
-              asf
               <InputLabel id="demo-simple-select-label">Age</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
@@ -276,7 +323,17 @@ const InvoiceForm: React.FC<Props> = ({
             </FormControl>
           </Grid>
           <Grid item xs={12}>
-            <StyledMaterialInput title="Project Description" />
+            <StyledMaterialInput
+              controlName="projectDescription"
+              EName="projectDescription"
+              control={control}
+              rules={{
+                required: "Client's Email is required",
+              }}
+              inputProps={{
+                title: "Client's Email",
+              }}
+            />
           </Grid>
         </Grid>
       </div>
@@ -289,108 +346,95 @@ const InvoiceForm: React.FC<Props> = ({
           Item List
         </Typography>
         <ul>
-          <li>
-            <Grid container columnSpacing={1.25}>
-              <Grid item xs={12} md={4}>
-                <StyledMaterialInput title="Item Name" />
-              </Grid>
-              <Grid item xs={3} md={2}>
-                <StyledMaterialInput title="Qty" />
-              </Grid>
-              <Grid item xs={4} md={3}>
-                <StyledMaterialInput title="Price" />
-              </Grid>
-              <Grid
-                item
-                xs={4}
-                md={2}
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1rem",
-                  color: "white",
-                }}
-              >
-                <label htmlFor="total">Total</label>
-                <div
-                  className="form-section__total"
-                  id="total"
-                  style={{ padding: "1rem 0" }}
+          {fields.map((item, index) => (
+            <li key={item.id}>
+              <p>{item.quantity} asd lksajdfl kajsdlkf j</p>
+              <Grid container columnSpacing={1.25}>
+                <Grid item xs={12} md={4}>
+                  <StyledMaterialInput
+                    controlName={`items.${index}.itemName.value`}
+                    EName={`items.${index}.itemName.value`}
+                    control={control}
+                    rules={{
+                      required: "Item Name is required",
+                    }}
+                    inputProps={{
+                      title: "Item Name",
+                      value: "",
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={3} md={2}>
+                  <StyledMaterialInput
+                    controlName={`items.${index}.quantity.value`}
+                    EName={`items.${index}.quantity.value`}
+                    control={control}
+                    rules={{
+                      required: "Qty is required",
+                    }}
+                    inputProps={{
+                      title: "Qty",
+                      value: item.quantity,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={4} md={3}>
+                  <StyledMaterialInput
+                    controlName={`items.${index}.price.value`}
+                    EName={`items.${index}.price.value`}
+                    control={control}
+                    rules={{
+                      required: "Price is required",
+                    }}
+                    inputProps={{
+                      title: "Price",
+                      value: item.price,
+                    }}
+                  />
+                </Grid>
+                <Grid
+                  item
+                  xs={4}
+                  md={2}
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "1rem",
+                    color: "white",
+                  }}
                 >
-                  25
-                </div>
-              </Grid>
-              <Grid
-                item
-                xs={1}
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  // marginBottom: "1rem",
-                }}
-              >
-                <IconButton
-                  size="large"
-                  aria-label="delete item"
-                  className="form-section__delete-item-button"
+                  <label htmlFor={`total${item.id}`}>Total</label>
+                  <div
+                    className="form-section__total"
+                    id={`total${item.id}`}
+                    style={{ padding: "1rem 0" }}
+                  >
+                    {calculateTotal(item.quantity, item.quantity)}
+                  </div>
+                </Grid>
+                <Grid
+                  item
+                  xs={1}
+                  sx={{
+                    display: "flex",
+                    alignSelf: "flex-start",
+                    marginTop: "2.3rem",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
                 >
-                  <DeleteIcon />
-                </IconButton>
+                  <IconButton
+                    size="large"
+                    aria-label="delete item"
+                    className="form-section__delete-item-button"
+                    onClick={() => remove(index)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Grid>
               </Grid>
-            </Grid>
-          </li>
-          <li>
-            <Grid container columnSpacing={1.25}>
-              <Grid item xs={12} md={4}>
-                <StyledMaterialInput title="Item Name" />
-              </Grid>
-              <Grid item xs={3} md={2}>
-                <StyledMaterialInput title="Qty" />
-              </Grid>
-              <Grid item xs={4} md={3}>
-                <StyledMaterialInput title="Price" />
-              </Grid>
-              <Grid
-                item
-                xs={4}
-                md={2}
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1rem",
-                  color: "white",
-                }}
-              >
-                <label htmlFor="total">Total</label>
-                <div
-                  className="form-section__total"
-                  id="total"
-                  style={{ padding: "1rem 0" }}
-                >
-                  25
-                </div>
-              </Grid>
-              <Grid
-                item
-                xs={1}
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  // marginBottom: "1rem",
-                }}
-              >
-                <IconButton
-                  size="large"
-                  aria-label="delete item"
-                  className="form-section__delete-item-button"
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </Grid>
-            </Grid>
-          </li>
+            </li>
+          ))}
         </ul>
         <Button
           fullWidth
@@ -402,6 +446,14 @@ const InvoiceForm: React.FC<Props> = ({
             textTransform: "none",
             backgroundColor: theme.palette.background.default,
           }}
+          onClick={() =>
+            append({
+              id: Math.random(),
+              name: "alsdkj",
+              price: 25,
+              quantity: 25,
+            })
+          }
         >
           + Add New Item
         </Button>
@@ -430,12 +482,13 @@ const InvoiceForm: React.FC<Props> = ({
             padding: "0.875rem 1.75rem",
             textTransform: "none",
           }}
+          type="submit"
           color="primary"
           onClick={handleSaveClicked}
         >
           Save Changes
         </Button>
-      </CardActions> */}
+      </CardActions>
     </StyledForm>
   );
 };

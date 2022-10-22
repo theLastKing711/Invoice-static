@@ -18,7 +18,7 @@ export interface IInvoiceForm {
   items: IInvoiceItem[];
   date: string;
   paymentTerms: number;
-  projectDescriptoin: string;
+  projectDescription: string;
 }
 
 export interface IBillFrom {
@@ -38,6 +38,7 @@ export interface IBillTo {
 }
 
 export interface IInvoiceItem {
+  id: number;
   name: string;
   quantity: number;
   price: number;
@@ -47,3 +48,8 @@ export interface IBillingOption {
   id: number;
   status: string;
 }
+
+export type InvoiceContextType = {
+  invoice: IInvoiceForm | null;
+  setInvoice: (invoice: IInvoiceForm) => void;
+};

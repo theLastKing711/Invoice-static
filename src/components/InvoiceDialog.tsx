@@ -1,9 +1,8 @@
 import Dialog, { DialogProps } from "@mui/material/Dialog";
-import { CardContent, useTheme } from "@mui/material";
+import { CardContent } from "@mui/material";
 import { styled as materialStyled } from "@mui/material/styles";
 import { Dayjs } from "dayjs";
 import InvoiceForm from "./InvoiceForm";
-import { useState } from "react";
 import { IInvoiceForm } from "../types";
 
 const StyledDialog = materialStyled(Dialog)<DialogProps>(({ theme }) => ({
@@ -51,23 +50,26 @@ const invoice: IInvoiceForm = {
   date: "2/12/2020",
   items: [
     {
+      id: 1,
       name: "first item",
       price: 200,
       quantity: 15,
     },
     {
+      id: 2,
       name: "second item",
       price: 400,
       quantity: 10,
     },
     {
+      id: 3,
       name: "third item",
       price: 500,
       quantity: 5,
     },
   ],
   paymentTerms: 3,
-  projectDescriptoin: "first project",
+  projectDescription: "first project",
 };
 
 interface Props {

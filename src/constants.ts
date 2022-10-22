@@ -1,4 +1,4 @@
-import { IBillingStatus, IInvoice } from "./types";
+import { IBillingStatus, IInvoice, IInvoiceForm } from "./types";
 
 export const invoicesList: IInvoice[] = [
   {
@@ -64,5 +64,26 @@ export const statusColor = {
   [IBillingStatus.DRAFT]: {
     name: "Draft",
     color: "white",
+  },
+};
+
+export const defaultInvoice: IInvoiceForm = {
+  date: "",
+  items: [],
+  paymentTerms: 0,
+  projectDescription: "",
+  billFrom: {
+    city: "",
+    country: "",
+    postCode: "",
+    streetAddress: "",
+  },
+  billTo: {
+    city: "",
+    clientEmail: "",
+    clientName: "",
+    country: "",
+    postCode: "",
+    streetAddress: "",
   },
 };
