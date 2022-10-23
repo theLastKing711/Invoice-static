@@ -1,4 +1,11 @@
-import { Button, MenuItem, Menu, Theme, useTheme } from "@mui/material";
+import {
+  Button,
+  Theme,
+  useTheme,
+  InputLabel,
+  FormControl,
+  NativeSelect,
+} from "@mui/material";
 import styled from "styled-components";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { IBillingOption } from "../types";
@@ -13,7 +20,7 @@ const StyledHeader = styled.header`
   color: white;
   margin-bottom: 4rem;
 
-  @media screen and (min-width: 415px) {
+  @media screen and (min-width: 450px) {
     flex-direction: row;
   }
 
@@ -29,6 +36,7 @@ const StyledHeader = styled.header`
     &__filter {
       display: flex;
       gap: 0.5rem;
+      flex-direction: column;
     }
 
     &__filter-button {
@@ -69,8 +77,6 @@ interface Props {
     event: React.MouseEvent<HTMLButtonElement>
   ) => void;
   handleFilterItemSelected: (id: number) => void;
-  anchorEl: HTMLElement | null;
-  setAnchorEl: React.Dispatch<React.SetStateAction<HTMLElement | null>>;
   handleNewInvoiceClicked: () => void;
 }
 
@@ -81,12 +87,12 @@ const InvoiceHeader: React.FC<Props> = ({
   handleFilterButtonToggled,
   isFilterMenuOpen,
   BillingStatusOptions,
-  anchorEl,
-  setAnchorEl,
   handleFilterItemSelected,
   handleNewInvoiceClicked,
 }: Props) => {
   const theme: Theme = useTheme();
+
+  const primaryColor = theme.palette.primary.main;
 
   const IsScreenWidthSmall = (
     screenWidth: number | undefined,
@@ -137,37 +143,43 @@ const InvoiceHeader: React.FC<Props> = ({
       </div>
       <div className="second-section">
         <div className="invoices-header__filter">
-          <label htmlFor="filter-button">
-            {getFilterText(screenWidth, smallScreenWidth)}
-          </label>
-          <button
-            aria-label="filter invoices by billing status"
-            className="invoices-header__filter-button"
-            id="filter-button"
-            onClick={handleFilterButtonToggled}
+          <InputLabel
+            htmlFor="select"
+            sx={{ color: "white", paddingLeft: "1rem" }}
           >
-            <KeyboardArrowDownIcon
-              style={{ color: theme.palette.primary.main }}
-            />
-          </button>
-          <Menu
-            id="basic-menu"
-            anchorEl={anchorEl}
-            open={isFilterMenuOpen}
-            onClose={() => {}}
-            MenuListProps={{
-              "aria-labelledby": "basic-button",
+            {getFilterText(screenWidth, smallScreenWidth)}
+          </InputLabel>
+          <NativeSelect
+            id="select"
+            sx={{
+              marginTop: "0 !important",
+              backgroundColor: "transparent",
+              "& .MuiNativeSelect-select": {
+                padding: "1.05rem",
+                color: "white",
+              },
+              "& .MuiSvgIcon-root": {
+                color: primaryColor,
+              },
+              "&::before": {
+                borderBottom: "none",
+              },
             }}
+            inputProps={{
+              title: "Street Address",
+              color: "red !important",
+            }}
+            IconComponent={KeyboardArrowDownIcon}
           >
             {BillingStatusOptions.map((item) => (
-              <MenuItem
+              <option
                 key={item.id}
                 onClick={() => handleFilterItemSelected(item.id)}
               >
                 {item.status}
-              </MenuItem>
+              </option>
             ))}
-          </Menu>
+          </NativeSelect>
         </div>
         <Button
           variant="contained"

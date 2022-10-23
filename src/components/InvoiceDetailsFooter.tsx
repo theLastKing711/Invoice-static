@@ -4,6 +4,7 @@ import styled from "styled-components";
 
 interface Props {
   theme: Theme;
+  handleEditClicked: () => void;
 }
 
 const StyledInvoiceFooter = styled.footer`
@@ -16,12 +17,15 @@ const StyledInvoiceFooter = styled.footer`
   gap: 1rem;
 `;
 
-const InvoiceDetailsFooter: React.FC<Props> = ({ theme }: Props) => {
+const InvoiceDetailsFooter: React.FC<Props> = ({
+  theme,
+  handleEditClicked,
+}: Props) => {
   const defaultBgColor = theme.palette.background.default;
 
   return (
     <StyledInvoiceFooter color={defaultBgColor}>
-      <Button variant="contained" color="secondary">
+      <Button variant="contained" color="secondary" onClick={handleEditClicked}>
         Edit
       </Button>
       <Button variant="contained" color="error">

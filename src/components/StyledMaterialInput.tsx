@@ -69,9 +69,12 @@ const StyledMaterialInput = <TFormValues extends FieldValues>({
         marginBottom: "1.25rem",
       }}
     >
-      <InputLabel sx={{ color: "white" }}>{inputProps?.title}</InputLabel>
+      <InputLabel sx={{ color: "white" }} htmlFor={name}>
+        {inputProps?.title}
+      </InputLabel>
       <TextInput
         // {...inputProps}
+        id={name}
         value={value}
         onChange={onChange}
         onBlur={onBlur}
@@ -79,11 +82,12 @@ const StyledMaterialInput = <TFormValues extends FieldValues>({
         inputRef={ref}
         error={error?.message != undefined}
       />
-      <p>{value}</p>
       <ErrorMessage
         errors={errors}
         name={EName}
-        render={({ message }) => <p style={{ color: "red" }}>{message}</p>}
+        render={({ message }) => (
+          <p style={{ color: "#D8000C", fontSize: "0.9rem" }}>{message}</p>
+        )}
       />
     </div>
   );

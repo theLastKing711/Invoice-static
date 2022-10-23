@@ -8,6 +8,7 @@ import InvoiceDetailsContent from "../components/InvoiceDetailsContent";
 import { useWindowSize } from "../customHooks/useWindowSize";
 import InvoiceDetailsFooter from "../components/InvoiceDetailsFooter";
 import InvoiceDialog from "../components/InvoiceDialog";
+import InvoiceForm from "../components/InvoiceForm";
 
 const meduimScreenSize = 899.95;
 
@@ -111,14 +112,16 @@ const InvoiceDetails = () => {
         <InvoiceDetailsHeader theme={theme} handleEditClicked={openDialog} />
         <InvoiceDetailsContent theme={theme} />
         {isScreenSizeMedium(screenSize, meduimScreenSize) && (
-          <InvoiceDetailsFooter theme={theme} />
+          <InvoiceDetailsFooter theme={theme} handleEditClicked={openDialog} />
         )}
       </StyledInvoiceDetails>
-      <InvoiceDialog
-        closeDialog={closeDialog}
-        openDialog={openDialog}
-        isDialogOpen={isDialogOpen}
-      />
+      <InvoiceDialog isDialogOpen={isDialogOpen} title="Edit #lksjdf2">
+        <InvoiceForm
+          invoice={invoice}
+          handleCancelClicked={closeDialog}
+          handleSaveClicked={openDialog}
+        />
+      </InvoiceDialog>
     </>
   );
 };

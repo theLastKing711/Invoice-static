@@ -7,8 +7,6 @@ import {
   Grid,
   IconButton,
   InputLabel,
-  MenuItem,
-  Select,
   TextField,
   Typography,
   useTheme,
@@ -16,10 +14,12 @@ import {
 import { Dayjs } from "dayjs";
 import React from "react";
 import { IInvoiceItem, IInvoiceForm } from "../types";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { DesktopDatePicker } from "@mui/x-date-pickers";
 import { defaultInvoice } from "../constants";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { NativeSelect } from "@mui/material";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 const StyledForm = styled.form`
   .form-section {
@@ -69,11 +69,6 @@ const items: IInvoiceItem[] = [
   },
 ];
 
-type FormData = {
-  firstName: string;
-  lastName: string;
-};
-
 const InvoiceForm: React.FC<Props> = ({
   invoice,
   handleCancelClicked,
@@ -81,23 +76,21 @@ const InvoiceForm: React.FC<Props> = ({
 }: Props) => {
   const theme = useTheme();
 
+  const primaryColor = theme.palette.primary.main;
+
   const {
     control,
-    setValue,
     handleSubmit,
-
     formState: { errors },
   } = useForm<IInvoiceForm>({
     defaultValues: defaultInvoice,
-    reValidateMode: "onBlur",
+    reValidateMode: "onChange",
   });
 
-  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
-    {
-      control, // control props comes from useForm (optional: if you are using FormContext)
-      name: "items", // unique name for your Field Array
-    }
-  );
+  const { fields, append, remove } = useFieldArray({
+    control, // control props comes from useForm (optional: if you are using FormContext)
+    name: "items", // unique name for your Field Array
+  });
 
   const defaultBgColor = theme.palette.background.default;
 
@@ -105,18 +98,25 @@ const InvoiceForm: React.FC<Props> = ({
     console.log("hello world");
   };
 
-  // console.log("errors", errors);
-
   const submit = (values: any) => {
     console.log("alksjd");
   };
 
-  const calculateTotal = (quantity: number, price: number): number => {
-    console.log("first", quantity);
-    console.log("second", price);
-
-    return quantity * price;
+  const calculateTotal = (quantity: any, price: any): number => {
+    return quantity.value * price.value;
   };
+
+  const watchFieldArray = useWatch({
+    control,
+    name: "items",
+  });
+
+  const controlledFields = fields.map((field, index) => {
+    return {
+      ...field,
+      ...watchFieldArray[index],
+    };
+  });
 
   return (
     <StyledForm
@@ -204,6 +204,10 @@ const InvoiceForm: React.FC<Props> = ({
               control={control}
               rules={{
                 required: "Client's Email is required",
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: "invalid email address",
+                },
               }}
               inputProps={{
                 title: "Client's Email",
@@ -262,27 +266,38 @@ const InvoiceForm: React.FC<Props> = ({
               }}
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item container flexDirection="column" xs={12} md={6}>
+            <label
+              htmlFor="dueDate"
+              style={{
+                color: "white",
+                marginBottom: "0.5rem",
+              }}
+            >
+              Due Date
+            </label>
             <DesktopDatePicker
-              disabled
+              // disabled
               inputFormat="MM/DD/YYYY"
-              renderInput={(params) => <TextField {...params} fullWidth />}
+              renderInput={(params) => (
+                <TextField id="dueDate" {...params} fullWidth />
+              )}
               onChange={handleChange}
               value={undefined}
               PopperProps={{
                 sx: {
-                  "& .MuiPickersDay-root": {
-                    color: "white",
-                  },
-                  "& .MuiDayPicker-weekDayLabel": {
-                    color: "white",
-                  },
-                  "&. MuiPickersCalendarHeader-label": {
-                    color: "white",
-                    ":hover": {
-                      color: "red",
-                    },
-                  },
+                  // "& .MuiPickersDay-root": {
+                  //   color: "white",
+                  // },
+                  // "& .MuiDayPicker-weekDayLabel": {
+                  //   color: "white",
+                  // },
+                  // "&. MuiPickersCalendarHeader-label": {
+                  //   color: "white",
+                  //   ":hover": {
+                  //     color: "red",
+                  //   },
+                  // },
                 },
               }}
               InputProps={{
@@ -303,23 +318,37 @@ const InvoiceForm: React.FC<Props> = ({
           <Grid item xs={12} md={6}>
             <FormControl
               fullWidth
-              sx={{ display: "flex", flexDirection: "column" }}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                marginBottom: "1.25rem",
+              }}
             >
-              <InputLabel id="demo-simple-select-label">Age</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={undefined}
-                onChange={() => {}}
-                sx={{
-                  backgroundColor: defaultBgColor,
-                  color: "white",
-                }}
+              <label
+                htmlFor="select"
+                style={{ marginBottom: "0.5rem", color: "white" }}
               >
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
-              </Select>
+                Payment Terms
+              </label>
+              <NativeSelect
+                id="select"
+                sx={{
+                  marginTop: "0 !important",
+                  backgroundColor: defaultBgColor,
+                  "& .MuiNativeSelect-select": {
+                    padding: "1.05rem",
+                    color: "white",
+                  },
+                  "& .MuiSvgIcon-root": {
+                    color: primaryColor,
+                  },
+                }}
+                IconComponent={KeyboardArrowDownIcon}
+              >
+                <option value="1">Net 10 Days</option>
+                <option value="2">Net 20 Days</option>
+                <option value="3">Net 30 Days</option>
+              </NativeSelect>
             </FormControl>
           </Grid>
           <Grid item xs={12}>
@@ -346,9 +375,8 @@ const InvoiceForm: React.FC<Props> = ({
           Item List
         </Typography>
         <ul>
-          {fields.map((item, index) => (
+          {controlledFields.map((item, index) => (
             <li key={item.id}>
-              <p>{item.quantity} asd lksajdfl kajsdlkf j</p>
               <Grid container columnSpacing={1.25}>
                 <Grid item xs={12} md={4}>
                   <StyledMaterialInput
@@ -371,6 +399,10 @@ const InvoiceForm: React.FC<Props> = ({
                     control={control}
                     rules={{
                       required: "Qty is required",
+                      pattern: {
+                        value: /^\d+$/,
+                        message: "only positive numbers are valid",
+                      },
                     }}
                     inputProps={{
                       title: "Qty",
@@ -385,6 +417,10 @@ const InvoiceForm: React.FC<Props> = ({
                     control={control}
                     rules={{
                       required: "Price is required",
+                      pattern: {
+                        value: /^\d+$/,
+                        message: "only positive numbers are valid",
+                      },
                     }}
                     inputProps={{
                       title: "Price",
@@ -409,7 +445,7 @@ const InvoiceForm: React.FC<Props> = ({
                     id={`total${item.id}`}
                     style={{ padding: "1rem 0" }}
                   >
-                    {calculateTotal(item.quantity, item.quantity)}
+                    {calculateTotal(item.quantity, item.price)}
                   </div>
                 </Grid>
                 <Grid
@@ -449,9 +485,9 @@ const InvoiceForm: React.FC<Props> = ({
           onClick={() =>
             append({
               id: Math.random(),
-              name: "alsdkj",
-              price: 25,
-              quantity: 25,
+              name: "",
+              price: 0,
+              quantity: 0,
             })
           }
         >

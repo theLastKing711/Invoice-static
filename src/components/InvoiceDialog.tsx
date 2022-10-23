@@ -32,70 +32,24 @@ const StyledDialog = materialStyled(Dialog)<DialogProps>(({ theme }) => ({
   },
 }));
 
-const invoice: IInvoiceForm = {
-  billFrom: {
-    city: "syria",
-    country: "damascus",
-    postCode: "1231",
-    streetAddress: "lajd 1938 ",
-  },
-  billTo: {
-    city: "syria",
-    clientEmail: "test@gmail.com",
-    clientName: "first client",
-    country: "der al zor",
-    postCode: "ljd123",
-    streetAddress: "alskjd 1289 ",
-  },
-  date: "2/12/2020",
-  items: [
-    {
-      id: 1,
-      name: "first item",
-      price: 200,
-      quantity: 15,
-    },
-    {
-      id: 2,
-      name: "second item",
-      price: 400,
-      quantity: 10,
-    },
-    {
-      id: 3,
-      name: "third item",
-      price: 500,
-      quantity: 5,
-    },
-  ],
-  paymentTerms: 3,
-  projectDescription: "first project",
-};
-
 interface Props {
   isDialogOpen: boolean;
-  openDialog: () => void;
-  closeDialog: () => void;
+  children?: React.ReactNode;
+  title: string;
 }
 
 const InvoiceDialog: React.FC<Props> = ({
   isDialogOpen,
-  openDialog,
-  closeDialog,
+  title,
+  children,
 }: Props) => {
   return (
     <StyledDialog open={isDialogOpen}>
       <header>
-        <h2 className="dialog-header">Edit #lksjdf2</h2>
+        <h2 className="dialog-header">{title}</h2>
       </header>
 
-      <CardContent sx={{ padding: "0rem" }}>
-        <InvoiceForm
-          invoice={invoice}
-          handleCancelClicked={closeDialog}
-          handleSaveClicked={openDialog}
-        />
-      </CardContent>
+      <CardContent sx={{ padding: "0rem" }}>{children}</CardContent>
     </StyledDialog>
   );
 };

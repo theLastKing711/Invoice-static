@@ -125,6 +125,7 @@ const StyledCard = styled.a`
 
 interface Props extends IInvoice {
   theme: Theme;
+  screenSize: number | undefined;
 }
 
 const InvoiceCard: React.FC<Props> = ({
@@ -134,8 +135,16 @@ const InvoiceCard: React.FC<Props> = ({
   owner,
   totalPrice,
   theme,
+  screenSize,
 }: Props) => {
   const defaultBgColor: string = theme.palette.primary.main;
+
+  const smallScreenWidth = 768;
+
+  const IsScreenWidthSmall = (
+    screenWidth: number | undefined,
+    smallScreenWidth: number
+  ): boolean => screenWidth != undefined && screenWidth <= smallScreenWidth;
 
   return (
     <StyledCard className="invoice-card" color={defaultBgColor} href={`/:id`}>
@@ -156,18 +165,13 @@ const InvoiceCard: React.FC<Props> = ({
         </div>
 
         <div className="invoice-card__payment">
-          <BillingStatusBadge
-            billingStatus={billingStatus}
-          ></BillingStatusBadge>
-          <a
-            className="invoice-card__details-link"
-            aria-label="invoice details"
-            href={`/${id}`}
-          >
+          <BillingStatusBadge billingStatus={billingStatus} />
+
+          {!IsScreenWidthSmall(screenSize, smallScreenWidth) && (
             <KeyboardArrowRightIcon
               style={{ color: theme.palette.primary.main }}
             />
-          </a>
+          )}
         </div>
       </div>
     </StyledCard>
