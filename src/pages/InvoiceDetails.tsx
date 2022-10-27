@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import InvoiceDetailsHeader from "../components/InvoiceDetailsHeader";
-import { IInvoiceForm } from "../types";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import styled from "styled-components";
 import { Theme, useTheme } from "@mui/material";
@@ -9,48 +8,14 @@ import { useWindowSize } from "../customHooks/useWindowSize";
 import InvoiceDetailsFooter from "../components/InvoiceDetailsFooter";
 import InvoiceDialog from "../components/InvoiceDialog";
 import InvoiceForm from "../components/InvoiceForm";
+import { InvoiceContext } from "../context/invoiceContext";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { paymentTermOptions } from "../constants";
+import { IInvoiceForm } from "../types";
+import { getBillingStatus } from "../helpers";
+import InvoiceDetailsTable from "../components/InvoiceDetailsTable";
 
 const meduimScreenSize = 899.95;
-
-const invoice: IInvoiceForm = {
-  billFrom: {
-    city: "syria",
-    country: "damascus",
-    postCode: "1231",
-    streetAddress: "lajd 1938 ",
-  },
-  billTo: {
-    city: "syria",
-    clientEmail: "test@gmail.com",
-    clientName: "first client",
-    country: "der al zor",
-    postCode: "ljd123",
-    streetAddress: "alskjd 1289 ",
-  },
-  date: "2/12/2020",
-  items: [
-    {
-      id: 1,
-      name: "first item",
-      price: 200,
-      quantity: 15,
-    },
-    {
-      id: 2,
-      name: "second item",
-      price: 400,
-      quantity: 10,
-    },
-    {
-      id: 3,
-      name: "third item",
-      price: 500,
-      quantity: 5,
-    },
-  ],
-  paymentTerms: 3,
-  projectDescription: "first project",
-};
 
 const StyledInvoiceDetails = styled.main`
   margin-top: 200px;
@@ -73,10 +38,21 @@ const StyledInvoiceDetails = styled.main`
   }
 `;
 
+const columnNames: string[] = ["Item Name", "Qty", "Price", "Total"];
+
 const InvoiceDetails = () => {
   const theme: Theme = useTheme();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const screenSize = useWindowSize();
+  const { id } = useParams();
+  let navigate = useNavigate();
+
+  const { getInvoiceById, removeInvoice, updateInvoice, markInvoicePaid } =
+    useContext(InvoiceContext);
+
+  const invoice = getInvoiceById(id || "3000");
+
+  console.log("invoice", invoice);
 
   const openDialog = () => {
     setIsDialogOpen(true);
@@ -93,33 +69,65 @@ const InvoiceDetails = () => {
     return screenSize != undefined && screenSize <= meduimScreenSize;
   };
 
+  const saveDialog = (invoice: IInvoiceForm): void => {
+    updateInvoice(invoice);
+    closeDialog();
+  };
+
+  const deleteInvoice = (id: string): void => {
+    removeInvoice(id);
+
+    navigate("/");
+  };
+
   return (
     <>
       <StyledInvoiceDetails>
         <div className="invoice-details__back-section">
-          <a
+          <Link
             className="invoice-details__back-link"
             aria-label="invoices"
-            href={`/`}
+            to={`/`}
           >
             <KeyboardArrowLeftIcon
               style={{ color: theme.palette.primary.main }}
             />
             Go Back
-          </a>
+          </Link>
         </div>
 
-        <InvoiceDetailsHeader theme={theme} handleEditClicked={openDialog} />
-        <InvoiceDetailsContent theme={theme} />
+        <InvoiceDetailsHeader
+          theme={theme}
+          id={invoice.id}
+          billingStats={getBillingStatus(invoice.isPaid)}
+          handleEditClicked={openDialog}
+          handleDeleteClicked={deleteInvoice}
+          handlePaidClicked={markInvoicePaid}
+        />
+        <InvoiceDetailsContent theme={theme} invoice={invoice}>
+          <InvoiceDetailsTable
+            items={invoice.items}
+            columnNames={columnNames}
+            screenWidth={screenSize}
+          />
+        </InvoiceDetailsContent>
+
         {isScreenSizeMedium(screenSize, meduimScreenSize) && (
-          <InvoiceDetailsFooter theme={theme} handleEditClicked={openDialog} />
+          <InvoiceDetailsFooter
+            id={invoice.id}
+            theme={theme}
+            handleEditClicked={openDialog}
+            handleDeleteClicked={deleteInvoice}
+          />
         )}
       </StyledInvoiceDetails>
-      <InvoiceDialog isDialogOpen={isDialogOpen} title="Edit #lksjdf2">
+      <InvoiceDialog isDialogOpen={isDialogOpen} title={`Edit #${invoice.id}`}>
         <InvoiceForm
           invoice={invoice}
+          paymentOptions={paymentTermOptions}
+          isEdit
           handleCancelClicked={closeDialog}
-          handleSaveClicked={openDialog}
+          handleSaveClicked={saveDialog}
         />
       </InvoiceDialog>
     </>

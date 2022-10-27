@@ -10,18 +10,32 @@ const StyledBadge = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 0.5rem;
   border-radius: 2px;
+  color: ${(props) => props.color};
+
+  .badge-circle {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: ${(props) => props.color};
+  }
 `;
 
 interface Props {
-  billingStatus: IBillingStatus;
+  billingStatus: Exclude<IBillingStatus, IBillingStatus.None>;
 }
 
 const BillingStatusBadge: React.FC<Props> = ({ billingStatus }) => {
   const badgeColor = statusColor[billingStatus].color;
   const statusName = statusColor[billingStatus].name;
 
-  return <StyledBadge style={{ color: badgeColor }}>{statusName}</StyledBadge>;
+  return (
+    <StyledBadge color={badgeColor}>
+      <div className="badge-circle"></div>
+      {statusName}
+    </StyledBadge>
+  );
 };
 
 export default BillingStatusBadge;

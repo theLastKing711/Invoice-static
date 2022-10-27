@@ -1,4 +1,5 @@
 export enum IBillingStatus {
+  None = 0,
   PAID = 1,
   PENDING = 2,
   DRAFT = 3,
@@ -13,12 +14,14 @@ export interface IInvoice {
 }
 
 export interface IInvoiceForm {
+  id: string;
   billFrom: IBillFrom;
   billTo: IBillTo;
   items: IInvoiceItem[];
   date: string;
   paymentTerms: number;
   projectDescription: string;
+  isPaid: boolean;
 }
 
 export interface IBillFrom {
@@ -50,6 +53,18 @@ export interface IBillingOption {
 }
 
 export type InvoiceContextType = {
-  invoice: IInvoiceForm | null;
-  setInvoice: (invoice: IInvoiceForm) => void;
+  invoices: IInvoiceForm[];
+  invoiceStatusFilter: IBillingStatus;
+  getInvoiceById: (id: string) => IInvoiceForm;
+  addInvoice: (invoice: IInvoiceForm) => void;
+  removeInvoice: (id: string) => void;
+  updateInvoice: (invoice: IInvoiceForm) => void;
+  markInvoicePaid: (id: string) => void;
+  setInvoiceStatusFilter: (status: IBillingStatus) => void;
 };
+
+
+export interface IPaymentTermOption {
+  id: number;
+  value: string;
+} 

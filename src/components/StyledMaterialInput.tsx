@@ -49,8 +49,8 @@ const StyledMaterialInput = <TFormValues extends FieldValues>({
 }: Props<TFormValues>) => {
   const {
     field: { onChange, onBlur, name, value, ref },
-    fieldState: { isTouched, isDirty, error },
-    formState: { touchedFields, dirtyFields, errors },
+    fieldState: { error },
+    formState: { errors },
   } = useController({
     name: controlName,
     control,
@@ -58,7 +58,7 @@ const StyledMaterialInput = <TFormValues extends FieldValues>({
     defaultValue: inputProps?.value as any,
   });
 
-  console.log("value", value);
+  // console.log("value", value);
 
   return (
     <div

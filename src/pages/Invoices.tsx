@@ -1,17 +1,14 @@
 import { Theme, useTheme } from "@mui/material";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import InvoiceCard from "../components/InvoiceCard";
 import InvoiceDialog from "../components/InvoiceDialog";
 import InvoiceForm from "../components/InvoiceForm";
 import InvoiceHeader from "../components/InvoiceHeader";
-import { invoicesList } from "../constants";
+import { defaultInvoice, paymentTermOptions } from "../constants";
+import { InvoiceContext } from "../context/invoiceContext";
 import { useWindowSize } from "../customHooks/useWindowSize";
-import {
-  IBillingOption,
-  IBillingStatus,
-  IInvoice,
-  IInvoiceForm,
-} from "../types";
+import { getBillingStatus } from "../helpers";
+import { IBillingOption, IBillingStatus, IInvoiceForm } from "../types";
 
 const BillingStatusOptions: IBillingOption[] = [
   {
@@ -31,66 +28,26 @@ const BillingStatusOptions: IBillingOption[] = [
     status: "Draft",
   },
 ];
-const invoice: IInvoiceForm = {
-  billFrom: {
-    city: "syria",
-    country: "damascus",
-    postCode: "1231",
-    streetAddress: "lajd 1938 ",
-  },
-  billTo: {
-    city: "syria",
-    clientEmail: "test@gmail.com",
-    clientName: "first client",
-    country: "der al zor",
-    postCode: "ljd123",
-    streetAddress: "alskjd 1289 ",
-  },
-  date: "2/12/2020",
-  items: [
-    {
-      id: 1,
-      name: "first item",
-      price: 200,
-      quantity: 15,
-    },
-    {
-      id: 2,
-      name: "second item",
-      price: 400,
-      quantity: 10,
-    },
-    {
-      id: 3,
-      name: "third item",
-      price: 500,
-      quantity: 5,
-    },
-  ],
-  paymentTerms: 3,
-  projectDescription: "first project",
-};
+const invoice: IInvoiceForm = defaultInvoice;
 
 const Invoices = () => {
   const screenWidth = useWindowSize();
   const theme: Theme = useTheme();
+  const { invoices, addInvoice, invoiceStatusFilter, setInvoiceStatusFilter } =
+    useContext(InvoiceContext);
 
-  const [invoices, setInvoices] = useState<IInvoice[]>(invoicesList);
   const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
-  const [statusFilter, setStatusFilter] = useState<number>(0);
   const [isInvoiceDialogOpen, setIsInvoiceDialogOpen] =
     useState<boolean>(false);
 
   const openFilterMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-    console.log(event.currentTarget);
-
     setIsFilterMenuOpen((old) => !old);
   };
 
   const filterInvoicesByStatus = (id: number): void => {
     setIsFilterMenuOpen(false);
 
-    setStatusFilter(id);
+    setInvoiceStatusFilter(id);
   };
 
   const openInvoiceDialog = (): void => {
@@ -99,17 +56,27 @@ const Invoices = () => {
   const closeInvoiceDialog = (): void => {
     setIsInvoiceDialogOpen(false);
   };
+
   const filterdInvoicesList = invoices.filter(
-    (invoice) => !statusFilter || invoice.billingStatus == statusFilter
+    (invoice) =>
+      !invoiceStatusFilter ||
+      getBillingStatus(invoice.isPaid) == invoiceStatusFilter
   );
+
+  const saveInvoice = (invoice: IInvoiceForm): void => {
+    addInvoice(invoice);
+
+    closeInvoiceDialog();
+  };
 
   return (
     <>
-      <InvoiceDialog isDialogOpen={isInvoiceDialogOpen} title="Edit #lksjdf2">
+      <InvoiceDialog isDialogOpen={isInvoiceDialogOpen} title="New Invoice">
         <InvoiceForm
           invoice={invoice}
+          paymentOptions={paymentTermOptions}
           handleCancelClicked={closeInvoiceDialog}
-          handleSaveClicked={openInvoiceDialog}
+          handleSaveClicked={saveInvoice}
         />
       </InvoiceDialog>
       <main style={{ marginTop: "10rem" }}>

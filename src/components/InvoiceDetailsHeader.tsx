@@ -37,12 +37,20 @@ const StyledHeader = styled.div`
 
 interface Props {
   theme: Theme;
+  id: string;
+  billingStats: Exclude<IBillingStatus, IBillingStatus.None>;
   handleEditClicked: () => void;
+  handleDeleteClicked: (id: string) => void;
+  handlePaidClicked: (id: string) => void;
 }
 
 const InvoiceDetailsHeader: React.FC<Props> = ({
   theme,
+  id,
+  billingStats,
   handleEditClicked,
+  handleDeleteClicked,
+  handlePaidClicked,
 }: Props) => {
   const defaultBgColor = theme.palette.background.default;
   const meduimScreenWidth = theme.breakpoints.down("md");
@@ -51,7 +59,7 @@ const InvoiceDetailsHeader: React.FC<Props> = ({
     <StyledHeader color={defaultBgColor}>
       <div className="details-header__first-section">
         <label className="details-header__status-title">Status</label>
-        <BillingStatusBadge billingStatus={IBillingStatus.PAID} />
+        <BillingStatusBadge billingStatus={billingStats} />
       </div>
       <div className="details-header__second-section">
         <Button
@@ -74,10 +82,13 @@ const InvoiceDetailsHeader: React.FC<Props> = ({
               display: "none",
             },
           }}
+          onClick={() => handleDeleteClicked(id)}
         >
           Delete
         </Button>
-        <Button variant="contained">Mark as Read</Button>
+        <Button variant="contained" onClick={() => handlePaidClicked(id)}>
+          Mark as Paid
+        </Button>
       </div>
     </StyledHeader>
   );

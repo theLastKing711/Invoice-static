@@ -1,11 +1,13 @@
 import React from "react";
 import styled from "styled-components";
-import { IInvoice } from "../types";
+import { IInvoice, IInvoiceForm, IInvoiceItem } from "../types";
 import BillingStatusBadge from "./BillingStatusBadge";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import { Theme } from "@mui/material";
+import { Link } from "react-router-dom";
+import { calculateTotal, getBillingStatus } from "../helpers";
 
-const StyledCard = styled.a`
+const StyledCard = styled.article`
   display: block;
   text-decoration: none;
   background-color: var(--bg-primary);
@@ -14,6 +16,8 @@ const StyledCard = styled.a`
   padding: 1.25rem 1.5rem;
   cursor: pointer;
   border: 1px solid transparent;
+
+  transition: border-color 0.3s;
 
   &:hover {
     border: 1px solid ${(props) => props.color};
@@ -123,18 +127,21 @@ const StyledCard = styled.a`
   color: white;
 `;
 
-interface Props extends IInvoice {
+interface Props extends IInvoiceForm {
   theme: Theme;
   screenSize: number | undefined;
 }
 
 const InvoiceCard: React.FC<Props> = ({
   id,
-  billingStatus,
   date,
-  owner,
-  totalPrice,
   theme,
+  billFrom,
+  billTo,
+  items,
+  paymentTerms,
+  projectDescription,
+  isPaid,
   screenSize,
 }: Props) => {
   const defaultBgColor: string = theme.palette.primary.main;
@@ -147,34 +154,38 @@ const InvoiceCard: React.FC<Props> = ({
   ): boolean => screenWidth != undefined && screenWidth <= smallScreenWidth;
 
   return (
-    <StyledCard className="invoice-card" color={defaultBgColor} href={`/:id`}>
-      <div className="first-row">
-        <div className="invoice-card__id">
-          <span className="invoice-card__id-hashtag">#</span>
-          {id}
-        </div>
-        <div className="invoice-card__due-date--desktop">Due {date}</div>
-        <div className="invoice-card__owner">{owner}</div>
-      </div>
-
-      <div className="second-row">
-        <div className="date-price-container">
-          <div className="invoice-card__due-date">Due {date}</div>
-
-          <div className="invoice-card__total-price">&euro;{totalPrice}</div>
+    <Link to={`/${id}`} style={{ textDecoration: "none" }}>
+      <StyledCard className="invoice-card" color={defaultBgColor}>
+        <div className="first-row">
+          <div className="invoice-card__id">
+            <span className="invoice-card__id-hashtag">#</span>
+            {id}
+          </div>
+          <div className="invoice-card__due-date--desktop">Due {date}</div>
+          <div className="invoice-card__owner"></div>
         </div>
 
-        <div className="invoice-card__payment">
-          <BillingStatusBadge billingStatus={billingStatus} />
+        <div className="second-row">
+          <div className="date-price-container">
+            <div className="invoice-card__due-date">Due {date}</div>
 
-          {!IsScreenWidthSmall(screenSize, smallScreenWidth) && (
-            <KeyboardArrowRightIcon
-              style={{ color: theme.palette.primary.main }}
-            />
-          )}
+            <div className="invoice-card__total-price">
+              &euro;{calculateTotal(items)}
+            </div>
+          </div>
+
+          <div className="invoice-card__payment">
+            <BillingStatusBadge billingStatus={getBillingStatus(isPaid)} />
+
+            {!IsScreenWidthSmall(screenSize, smallScreenWidth) && (
+              <KeyboardArrowRightIcon
+                style={{ color: theme.palette.primary.main }}
+              />
+            )}
+          </div>
         </div>
-      </div>
-    </StyledCard>
+      </StyledCard>
+    </Link>
   );
 };
 

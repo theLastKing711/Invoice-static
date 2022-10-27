@@ -1,9 +1,10 @@
 import { Grid, Theme, ThemeCssVar, useTheme } from "@mui/material";
 import React from "react";
 import styled from "styled-components";
+import { IInvoiceForm } from "../types";
 
 const StyledDetailsContent = styled.section`
-  padding: 2rem;
+  padding: 3rem;
   background-color: ${(props) => props.color};
   margin-top: 1.125rem;
   border-radius: 6px;
@@ -41,9 +42,15 @@ const StyledDetailsContent = styled.section`
 
 interface Props {
   theme: Theme;
+  invoice: IInvoiceForm;
+  children: JSX.Element;
 }
 
-const InvoiceDetailsContent: React.FC<Props> = ({ theme }) => {
+const InvoiceDetailsContent: React.FC<Props> = ({
+  theme,
+  invoice,
+  children,
+}) => {
   const defaultBgColor = theme.palette.background.default;
   const smallScreenSize: string = theme.breakpoints.down("sm");
 
@@ -69,7 +76,7 @@ const InvoiceDetailsContent: React.FC<Props> = ({ theme }) => {
             }}
           >
             <div className="invoice-details-content__rebranding-title main-title main-margin">
-              #RT308
+              #{invoice.id}
             </div>
             <div className="invoice-details-content__address sub-title">
               Re-branding
@@ -92,16 +99,16 @@ const InvoiceDetailsContent: React.FC<Props> = ({ theme }) => {
               className="invoice-details-content__bill-from-street-address sub-title sub-margin"
               sub-margin
             >
-              19 Union Terrace
+              {invoice.billFrom.streetAddress}
             </div>
             <div className="invoice-details-content__bill-from-country sub-title sub-margin">
-              London
+              {invoice.billFrom.country}
             </div>
             <div className="invoice-details-content__bill-from-postal-code sub-title sub-margin">
-              E13EZ
+              {invoice.billFrom.postCode}
             </div>
             <div className="invoice-details-content__bill-from-city sub-title sub-margin">
-              United Kingdom
+              {invoice.billFrom.city}
             </div>
           </Grid>
         </Grid>
@@ -129,7 +136,7 @@ const InvoiceDetailsContent: React.FC<Props> = ({ theme }) => {
                 Invoice Date
               </div>
               <div className="invoice-details-content__invoice-date-date main-title">
-                18 Aug 2021
+                {invoice.date}
               </div>
             </div>
           </Grid>
@@ -150,19 +157,19 @@ const InvoiceDetailsContent: React.FC<Props> = ({ theme }) => {
               Bill To
             </div>
             <div className="invoice-details-content__bill-to-owner main-title main-margin">
-              Jensen Huang
+              {invoice.billTo.clientName}
             </div>
             <div className="invoice-details-content__bill-to-street-address sub-title sub-margin">
-              106 Kendell Street
+              {invoice.billTo.streetAddress}
             </div>
             <div className="invoice-details-content__bill-to-city sub-title sub-margin">
-              Sharringun
+              {invoice.billTo.city}
             </div>
             <div className="invoice-details-content__bill-to-postal-code sub-title sub-title sub-margin">
-              NR245WQ
+              {invoice.billTo.postCode}
             </div>
             <div className="invoice-details-content-bill-to-country sub-title">
-              United Kingdom
+              {invoice.billTo.country}
             </div>
           </Grid>
           <Grid
@@ -182,11 +189,12 @@ const InvoiceDetailsContent: React.FC<Props> = ({ theme }) => {
               Sent To
             </div>
             <div className="invoice-details-content__sent-to-email-value main-title">
-              jensenh@mail.com
+              {invoice.billTo.clientName}
             </div>
           </Grid>
         </Grid>
       </Grid>
+      {children}
     </StyledDetailsContent>
   );
 };

@@ -1,54 +1,250 @@
-import { IBillingStatus, IInvoice, IInvoiceForm } from "./types";
+import { IBillingStatus,  IInvoiceForm, IPaymentTermOption } from "./types";
 
-export const invoicesList: IInvoice[] = [
+export const invoicesList: IInvoiceForm[] = [
   {
-    id: "RT3080",
-    owner: "Jensen Huang",
-    date: "19 Aug 2021",
-    billingStatus: IBillingStatus.PAID,
-    totalPrice: 1800.9,
+    id: "345226",
+    date: "2/12/2022",
+    paymentTerms: 0,
+    projectDescription: "project description",
+    isPaid: false,
+    billFrom: {
+      city: "Syria",
+      country: "Damascus",
+      postCode: "12131",
+      streetAddress: "damscus street",
+    },
+    billTo: {
+      city: "Syria",
+      clientEmail: "test@gmail.com",
+      clientName: "first client",
+      country: "hama",
+      postCode: "1231",
+      streetAddress: "aleppo street",
+    },
+    items: [
+      {
+        id:  1,
+        name: "first item",
+        price: 300,
+        quantity: 1
+      },
+      {
+        id: 2,
+        name: "second item",
+        price: 500,
+        quantity: 1
+      },
+    ],
   },
   {
-    id: "RT3081",
-    owner: "Jensen Huang",
-    date: "19 Aug 2021",
-    billingStatus: IBillingStatus.PENDING,
-    totalPrice: 1800.9,
+    id: "345225",
+    date: "2/12/2022",
+    paymentTerms: 0,
+    projectDescription: "project description",
+    isPaid: false,
+    billFrom: {
+      city: "Syria",
+      country: "Damascus",
+      postCode: "12131",
+      streetAddress: "damscus street",
+    },
+    billTo: {
+      city: "Syria",
+      clientEmail: "test@gmail.com",
+      clientName: "second client",
+      country: "hama",
+      postCode: "1231",
+      streetAddress: "aleppo street",
+    },
+    items: [
+      {
+        id:  1,
+        name: "first item",
+        price: 300,
+        quantity: 1
+      },
+      {
+        id: 2,
+        name: "second item",
+        price: 500,
+        quantity: 4
+      },
+    ]
   },
   {
-    id: "RT3082",
-    owner: "Jensen Huang",
-    date: "19 Aug 2021",
-    billingStatus: IBillingStatus.PAID,
-    totalPrice: 1800.9,
+    id: "345222",
+    date: "2/12/2022",
+    paymentTerms: 0,
+    projectDescription: "project description",
+    isPaid: false,
+    billFrom: {
+      city: "Syria",
+      country: "Damascus",
+      postCode: "12131",
+      streetAddress: "damscus street",
+    },
+    billTo: {
+      city: "Syria",
+      clientEmail: "test@gmail.com",
+      clientName: "third client",
+      country: "hama",
+      postCode: "1231",
+      streetAddress: "aleppo street",
+    },
+    items: [
+      {
+        id:  1,
+        name: "first item",
+        price: 300,
+        quantity: 4
+      },
+      {
+        id: 2,
+        name: "second item",
+        price: 500,
+        quantity: 2
+      },
+    ]
   },
   {
-    id: "RT3083",
-    owner: "Jensen Huang",
-    date: "19 Aug 2021",
-    billingStatus: IBillingStatus.PENDING,
-    totalPrice: 1800.9,
+    id: "345221",
+    date: "2/12/2022",
+    paymentTerms: 0,
+    projectDescription: "project description",
+    isPaid: false,
+    billFrom: {
+      city: "Syria",
+      country: "Damascus",
+      postCode: "12131",
+      streetAddress: "damscus street",
+    },
+    billTo: {
+      city: "Syria",
+      clientEmail: "test@gmail.com",
+      clientName: "fourth client",
+      country: "hama",
+      postCode: "1231",
+      streetAddress: "aleppo street",
+    },
+    items: [
+      {
+        id:  1,
+        name: "first item",
+        price: 300,
+        quantity: 2
+      },
+      {
+        id: 2,
+        name: "second item",
+        price: 500,
+        quantity: 1
+      },
+    ]
   },
   {
-    id: "RT3084",
-    owner: "Jensen Huang",
-    date: "19 Aug 2021",
-    billingStatus: IBillingStatus.PAID,
-    totalPrice: 1800.9,
+    id: "345223",
+    date: "2/12/2022",
+    paymentTerms: 0,
+    projectDescription: "project description",
+    isPaid: false,
+    billFrom: {
+      city: "Syria",
+      country: "Damascus",
+      postCode: "12131",
+      streetAddress: "damscus street",
+    },
+    billTo: {
+      city: "Syria",
+      clientEmail: "test@gmail.com",
+      clientName: "fifth client",
+      country: "hama",
+      postCode: "1231",
+      streetAddress: "aleppo street",
+    },
+    items: [
+      {
+        id:  1,
+        name: "first item",
+        price: 300,
+        quantity: 1
+      },
+      {
+        id: 2,
+        name: "second item",
+        price: 500,
+        quantity: 2
+      },
+    ]
   },
   {
-    id: "RT3085",
-    owner: "Jensen Huang",
-    date: "19 Aug 2021",
-    billingStatus: IBillingStatus.DRAFT,
-    totalPrice: 1800.9,
+    id: "345229",
+    date: "2/12/2022",
+    paymentTerms: 0,
+    projectDescription: "project description",
+    isPaid: false,
+    billFrom: {
+      city: "Syria",
+      country: "Damascus",
+      postCode: "12131",
+      streetAddress: "damscus street",
+    },
+    billTo: {
+      city: "Syria",
+      clientEmail: "test@gmail.com",
+      clientName: "sixth client",
+      country: "hama",
+      postCode: "1231",
+      streetAddress: "aleppo street",
+    },
+    items: [
+      {
+        id:  1,
+        name: "first item",
+        price: 300,
+        quantity: 1
+      },
+      {
+        id: 2,
+        name: "second item",
+        price: 500,
+        quantity: 2
+      },
+    ]
   },
   {
-    id: "RT3087",
-    owner: "Jensen Huang",
-    date: "19 Aug 2021",
-    billingStatus: IBillingStatus.DRAFT,
-    totalPrice: 1800.9,
+    id: "3452324",
+    date: "2/12/2022",
+    paymentTerms: 0,
+    projectDescription: "project description",
+    isPaid: false,
+    billFrom: {
+      city: "Syria",
+      country: "Damascus",
+      postCode: "12131",
+      streetAddress: "damscus street",
+    },
+    billTo: {
+      city: "Syria",
+      clientEmail: "test@gmail.com",
+      clientName: "seventh client",
+      country: "hama",
+      postCode: "1231",
+      streetAddress: "aleppo street",
+    },
+    items: [
+      {
+        id:  1,
+        name: "first item",
+        price: 300,
+        quantity: 1
+      },
+      {
+        id: 2,
+        name: "second item",
+        price: 500,
+        quantity: 2
+      },
+    ]
   },
 ];
 
@@ -68,10 +264,12 @@ export const statusColor = {
 };
 
 export const defaultInvoice: IInvoiceForm = {
-  date: "",
+  id: "",
+  date: "02/02/2022",
   items: [],
   paymentTerms: 0,
   projectDescription: "",
+  isPaid: false,
   billFrom: {
     city: "",
     country: "",
@@ -87,3 +285,18 @@ export const defaultInvoice: IInvoiceForm = {
     streetAddress: "",
   },
 };
+
+export const paymentTermOptions: IPaymentTermOption[] = [
+  {
+    id: 1,
+    value: "Net 10 days"
+  },
+  {
+    id: 2,
+    value: "Net 20 days"
+  },
+  {
+    id: 3,
+    value: "Net 30 days"
+  }
+]

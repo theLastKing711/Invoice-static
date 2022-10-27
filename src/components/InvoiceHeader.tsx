@@ -3,7 +3,6 @@ import {
   Theme,
   useTheme,
   InputLabel,
-  FormControl,
   NativeSelect,
 } from "@mui/material";
 import styled from "styled-components";

@@ -4,7 +4,9 @@ import styled from "styled-components";
 
 interface Props {
   theme: Theme;
+  id: string;
   handleEditClicked: () => void;
+  handleDeleteClicked: (id: string) => void;
 }
 
 const StyledInvoiceFooter = styled.footer`
@@ -19,7 +21,9 @@ const StyledInvoiceFooter = styled.footer`
 
 const InvoiceDetailsFooter: React.FC<Props> = ({
   theme,
+  id,
   handleEditClicked,
+  handleDeleteClicked,
 }: Props) => {
   const defaultBgColor = theme.palette.background.default;
 
@@ -28,7 +32,11 @@ const InvoiceDetailsFooter: React.FC<Props> = ({
       <Button variant="contained" color="secondary" onClick={handleEditClicked}>
         Edit
       </Button>
-      <Button variant="contained" color="error">
+      <Button
+        variant="contained"
+        color="error"
+        onClick={() => handleDeleteClicked(id)}
+      >
         Delete
       </Button>
     </StyledInvoiceFooter>
